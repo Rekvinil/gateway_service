@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import storeLab.gateway_service.entity.Product;
 import storeLab.gateway_service.service.ProductsService;
 
+import java.util.Map;
+
 @Controller
 public class ProductsController {
 
@@ -36,14 +38,14 @@ public class ProductsController {
     }
 
     @PostMapping("/addProduct")
-    public String addProduct(@RequestParam String name, @RequestParam String price,
-                             @RequestParam String discount, @RequestParam String img){
-        productsService.addProduct(name, price, discount, img);
+    public String addProduct(@RequestParam Map<String,String> requestParams){
+        productsService.addProduct(requestParams);
         return "redirect:/getProducts";
     }
 
     @GetMapping("/addProduct")
-    public String getProductAddPage(){
+    public String getProductAddPage(Model model){
+        model.addAttribute("characteristics", productsService.getCharacteristics());
         return "addProduct";
     }
 }
