@@ -8,6 +8,7 @@ import storeLab.gateway_service.entity.Product;
 import storeLab.gateway_service.entity.ProductCharacteristic;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -28,13 +29,22 @@ public class ProductsService {
         return restTemplate.getForObject(URL_PRODUCT+"/productEditing/"+id,Product.class);
     }
 
-    public void changeProduct(String name, String price,
-                              String discount, String img,
-                              Integer id){
-        float pricef = Float.parseFloat(price);
-        Product product = new Product(id,name,pricef,discount,img);
-        HttpEntity<Product> requestBody = new HttpEntity<>(product);
+    public void changeProduct(Map<String, String> requestParams){
+        float pricef = Float.parseFloat(requestParams.get("price"));
+        Product newProduct = new Product(Integer.parseInt(requestParams.get("id")),requestParams.get("name"),pricef,requestParams.get("discount"),
+                requestParams.get("img"));
+        HttpEntity<Product> requestBody = new HttpEntity<>(newProduct);
         restTemplate.put(URL_PRODUCT+"/productEditing/changeProduct",requestBody,Product.class);
+        List<ProductCharacteristic> pcs = getCharacteristicsOfProduct(Integer.parseInt(requestParams.get("id")));
+        for(ProductCharacteristic pc : pcs){
+            pc.setValue(requestParams.get(pc.getCharacteristics().getName()));
+        }
+        for(ProductCharacteristic pc : pcs){
+            System.out.println(pc);
+        }
+        ProductCharacteristic[] productCharacteristics = new ProductCharacteristic[pcs.size()];
+        HttpEntity<ProductCharacteristic[]> requestPut = new HttpEntity<>(pcs.toArray(productCharacteristics));
+        restTemplate.put(URL_PRODUCT+"/productEditing/changeCharacteristicsOfProduct", requestPut, ProductCharacteristic[].class);
     }
 
     public void addProduct(Map<String,String> requestParams){
@@ -84,5 +94,15 @@ public class ProductsService {
 
     public void deleteCharacteristic(Integer id){
         restTemplate.delete(URL_PRODUCT+"/characteristicsEditing/deleteCharacteristic/"+id);
+    }
+
+    public void deleteProduct(Integer id){
+        restTemplate.delete(URL_PRODUCT+"/productEditing/deleteProduct/"+id);
+    }
+
+    public List<ProductCharacteristic> getCharacteristicsOfProduct(Integer id){
+        ProductCharacteristic[] productCharacteristics =
+                restTemplate.getForObject(URL_PRODUCT+"/productEditing/getCharacteristicsOfProduct/"+id,ProductCharacteristic[].class);
+        return Arrays.asList(productCharacteristics);
     }
 }

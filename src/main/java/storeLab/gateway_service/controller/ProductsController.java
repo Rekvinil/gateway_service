@@ -4,8 +4,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import storeLab.gateway_service.entity.Product;
+import storeLab.gateway_service.entity.ProductCharacteristic;
 import storeLab.gateway_service.service.ProductsService;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -26,14 +28,14 @@ public class ProductsController {
     @GetMapping("/changeProduct/{product}")
     public String getProduct(@PathVariable Integer product, Model model){
         model.addAttribute("product", productsService.getProduct(product));
+        List<ProductCharacteristic> productCharacteristics = productsService.getCharacteristicsOfProduct(product);
+        model.addAttribute("productscharacteristics", productCharacteristics);
         return "changeProduct";
     }
 
     @PostMapping("/changeProduct")
-    public String changeProduct(@RequestParam String name, @RequestParam String price,
-                                @RequestParam String discount, @RequestParam String img,
-                                @RequestParam Integer id){
-        productsService.changeProduct(name,price,discount,img,id);
+    public String changeProduct(@RequestParam Map<String, String> requestParams){
+        productsService.changeProduct(requestParams);
         return "redirect:/getProducts";
     }
 
@@ -47,5 +49,11 @@ public class ProductsController {
     public String getProductAddPage(Model model){
         model.addAttribute("characteristics", productsService.getCharacteristics());
         return "addProduct";
+    }
+
+    @GetMapping("/deleteProduct/{id}")
+    public String deleteProduct(@PathVariable Integer id){
+        productsService.deleteProduct(id);
+        return "redirect:/getProducts";
     }
 }

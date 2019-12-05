@@ -46,4 +46,14 @@ public class ProductCharacteristic{
     public void setId(Integer id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "ProductCharacteristic{" +
+                "id=" + id +
+                ", product=" + product +
+                ", characteristics=" + characteristics +
+                ", value='" + value + '\'' +
+                '}';
+    }
 }

@@ -8,6 +8,9 @@
             <label>Цена<input type="text" name="price" value="${product.price}"></label>
             <label>Скидка<input type="text" name="discount" value="${product.discount!}"></label>
             <label>Картинка<input type="text" name="img" value="${product.img!}"></label>
+            <#list productscharacteristics as productcharacteristic>
+                <label>${productcharacteristic.characteristics.name}<input name="${productcharacteristic.characteristics.name}" value="${productcharacteristic.value}" type="text"></label>
+            </#list>
             <input type="hidden" value="${product.id}" name="id">
             <button type="submit">Изменить</button>
         </form>
