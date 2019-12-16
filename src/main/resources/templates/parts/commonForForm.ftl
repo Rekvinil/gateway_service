@@ -35,30 +35,8 @@
     <body>
     <#include "navbar.ftl">
     <div class="container-fluid mx-0 px-0" style="margin-top: 5em">
-    <#nested>
+        <#nested>
     </div>
-    <footer class="page-footer text-center font-small mt-4 wow fadeIn red">
-        <div class = "pt-4 pb-4">
-            <a href="#">
-                <i class="fab fa-facebook-square mr-3"></i>
-            </a>
-            <a href="#">
-                <i class="fab fa-youtube-square mr-3"></i>
-            </a>
-            <a href="#">
-                <i class="fab fa-vk mr-3"></i>
-            </a>
-            <a href="#">
-                <i class="fab fa-google mr-3"></i>
-            </a>
-            <a href="#">
-                <i class="fab fa-github mr-3"></i>
-            </a>
-        </div>
-        <div class="footer-copyright py-3">
-            @ComicsUniverse
-        </div>
-    </footer>
     <script type="text/javascript" src="/static/js/jquery-3.4.1.min.js"></script>
     <!-- Bootstrap tooltips -->
     <script type="text/javascript" src="/static/js/popper.min.js"></script>

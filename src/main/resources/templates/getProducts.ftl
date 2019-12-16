@@ -10,5 +10,10 @@
             <a href="/changeProduct/${product.id}">Изменить</a>
             <a href="/deleteProduct/${product.id}">Удалить</a>
         </div>
+        <div>
+            <#if product.img??>
+                <img src="/imgs/${product.img}" alt="Нет картинки">
+            </#if>
+        </div>
     </#list>
 </@a.page>
