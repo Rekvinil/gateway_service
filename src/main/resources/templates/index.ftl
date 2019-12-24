@@ -86,12 +86,18 @@
                                     <h5 class="mt-auto pt-auto">
                                         <strong>
                                             <a href="/menu/${product.id}" class="dark-grey-text" style="font-size: 1.25em">
-                                                <span>
-                                                    <del>${product.price}₽</del>
+                                                <#if product.discount != "0">
+                                                    <span>
+                                                    <del>${product.price}</del>
                                                 </span>
-                                                <span>
-                                                    ${product.price}₽
+                                                    <span>
+                                                    ${product.price*(1-product.discount?number/100)}₽
                                                 </span>
+                                                    <#else>
+                                                        <span>
+                                                            ${product.price}₽
+                                                        </span>
+                                                </#if>
                                             </a>
                                         </strong>
                                     </h5>

@@ -43,22 +43,44 @@
                                 <div class="col">${characteristic.value}</div>
                             </div>
                         </#list>
+                        <div class="row border border-black mb-0 pb-0">
+                            <div class="col">
+                                <h6>Количество товара на складе:</h6>
+                            </div>
+                            <div class="col">${product.count}</div>
+                        </div>
                         <h2 class="mt-3">
                             <strong class="dark-grey-text">
-                                Цена: ${product.price}₽
+                                <#if product.discount != "0">
+                                    Цена: <span>
+                                    <del>${product.price}</del>
+                                </span>
+                                    <span>
+                                        ${product.price*(1-product.discount?number/100)}₽
+                                    </span>
+                                    <#else>
+                                        Цена: ${product.price}₽
+                                </#if>
                             </strong>
                         </h2>
-                        <div class="row">
-                            <a href="" class="btn btn-warning">
-                                Добавить в корзину
-                            </a>
-                            <form class="ml-auto" method="post" action="/addToWishList">
-                                <input type="hidden" name="productId" value="${product.id}">
-                                <input type="hidden" name="username" value="${nameUser}">
-                                <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                                <button class="btn red" type="submit">В список желаемого</button>
-                            </form>
-                        </div>
+                        <#if nameUser!="Вход/Регистрация"&&!coder??>
+                            <div class="row">
+                                <form method="post" action="/addToCart">
+                                    <input type="hidden" name="productId" value="${product.id}">
+                                    <input type="hidden" name="username" value="${nameUser}">
+                                    <input type="hidden" name="_csrf" value="${_csrf.token!""}"/>
+                                    <button class="btn btn-warning" type="submit">Добавить в корзину</button>
+                                </form>
+                                <form class="ml-auto" method="post" action="/addToWishList">
+                                    <input type="hidden" name="productId" value="${product.id}">
+                                    <input type="hidden" name="username" value="${nameUser}">
+                                    <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                                    <button class="btn red" type="submit">В список желаемого</button>
+                                </form>
+                            </div>
+                            <#else>
+                            <div class="text-center">Чтобы купить товар или добавить его в список желаемого войдите или зарегистрируйтесь. Или подтвердите адрес электронной почты.</div>
+                        </#if>
                     </div>
                 </div>
             </div>
@@ -88,43 +110,49 @@
                     <div class="row" style="text-align: left">
                         ${review.text}
                     </div>
+                    <#if isAdmin>
                     <div class="row" style="text-align: left">
                         <a class="btn btn-sm btn-warning" href="/deleteReview/${product.id}/${review.id}" >Удалить</a>
                     </div>
+                    </#if>
                 </div>
             </#list>
             <h6 class="mt-4"><strong>Оставьте свой отзыв</strong></h6>
-            <div class="container border border-dark" style="text-align: left">
-                <form method="post" action="/menu/addReview">
-                    <div class="form-group">
-                        <label for="inputState">Оценка</label>
-                        <br>
-                        <select id="inputState" class="form-control-sm" name="mark">
-                            <option selected>5</option>
-                            <option>4.5</option>
-                            <option>4</option>
-                            <option>3.5</option>
-                            <option>3</option>
-                            <option>2.5</option>
-                            <option>2</option>
-                            <option>1.5</option>
-                            <option>1</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleFormControlTextarea1">Отзыв</label>
-                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="4" name="text"></textarea>
-                    </div>
-                    <#if nameUser??>
-                        <input type="hidden" name="nameUser" value="${nameUser}">
-                    <#else>
-                        <input type="hidden" name="nameUser" value="Неизвестно">
-                    </#if>
-                    <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                    <input type="hidden" name="product" value="${product.id}">
-                    <button class="btn btn-warning" type="submit">Оставить отзыв</button>
-                </form>
-            </div>
+            <#if nameUser!="Вход/Регистрация"&&!coder??>
+                <div class="container border border-dark" style="text-align: left">
+                    <form method="post" action="/menu/addReview">
+                        <div class="form-group">
+                            <label for="inputState">Оценка</label>
+                            <br>
+                            <select id="inputState" class="form-control-sm" name="mark">
+                                <option selected>5</option>
+                                <option>4.5</option>
+                                <option>4</option>
+                                <option>3.5</option>
+                                <option>3</option>
+                                <option>2.5</option>
+                                <option>2</option>
+                                <option>1.5</option>
+                                <option>1</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlTextarea1">Отзыв</label>
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="4" name="text"></textarea>
+                        </div>
+                        <#if nameUser??>
+                            <input type="hidden" name="nameUser" value="${nameUser}">
+                        <#else>
+                            <input type="hidden" name="nameUser" value="Неизвестно">
+                        </#if>
+                        <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                        <input type="hidden" name="product" value="${product.id}">
+                        <button class="btn btn-warning" type="submit">Оставить отзыв</button>
+                    </form>
+                </div>
+                <#else>
+                <div>Чтобы оставить свой отзыв зарегистрируйтесь или активируйте почту</div>
+            </#if>
         </div>
     </main>
 </@c.page>

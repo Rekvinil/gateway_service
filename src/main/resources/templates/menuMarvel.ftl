@@ -3,12 +3,12 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <meta
             name="viewport"
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge"/>
     <title>Comics Universe</title>
     <!-- Font Awesome -->
     <link
@@ -16,11 +16,11 @@
             href="https://use.fontawesome.com/releases/v5.11.2/css/all.css"
     />
     <!-- Bootstrap core CSS -->
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet"/>
     <!-- Material Design Bootstrap -->
-    <link href="/static/css/mdb.min.css" rel="stylesheet" />
+    <link href="/static/css/mdb.min.css" rel="stylesheet"/>
     <!-- Your custom styles (optional) -->
-    <link href="/static/css/style.css" rel="stylesheet" />
+    <link href="/static/css/style.css" rel="stylesheet"/>
     <style>
         html,
         body,
@@ -62,14 +62,15 @@
                 <li class="nav-item ">
                     <a href="/menu" class="nav-link waves-effect" style="color: white">Каталог</a>
                 </li>
-                <li class="nav-item ">
-                    <a href="#" class="nav-link waves-effect" style="color: white">О нас</a>
-                </li>
+                <#if isAdmin>
+                    <li class="nav-item">
+                        <a href="/adminPage" class="nav-link waves-effect" style="color: white">Панель администратора</a>
+                    </li>
+                </#if>
             </ul>
             <ul class="navbar-nav nav-flex-icons">
                 <li class="nav-item d-flex align-items-center">
-                    <a href="#" class="nav-link waves-effect">
-                        <span class="badge yellow z-depth-1 mr-1">2</span>
+                    <a href="/cart/${nameUser}" class="nav-link waves-effect">
                         <i class="fa fa-shopping-cart"></i>
                         <span class="clearfix d-none d-sm-inline-block">Корзина</span>
                     </a>
@@ -88,7 +89,7 @@
                     </li>
                     <li class="nav-item ">
                         <form method="post" action="/logout">
-                            <input class="btn btn-white" type="submit"  value="Выход" style="color: black">
+                            <input class="btn btn-white" type="submit" value="Выход" style="color: black">
                             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                         </form>
                     </li>
@@ -288,8 +289,20 @@
                                 <div class="container-fluid" style="position: absolute; bottom: 0; right: 0">
                                     <h5 class="mt-auto pt-auto">
                                         <strong>
-                                            <a href="/menu/${product.id}" class="dark-grey-text" style="font-size: 1.5em">
-                                                ${product.price}₽
+                                            <a href="/menu/${product.id}" class="dark-grey-text"
+                                               style="font-size: 1.25em">
+                                                <#if product.discount != "0">
+                                                    <span>
+                                                    <del>${product.price}</del>
+                                                </span>
+                                                    <span>
+                                                    ${product.price*(1-product.discount?number/100)}₽
+                                                </span>
+                                                <#else>
+                                                    <span>
+                                                            ${product.price}₽
+                                                        </span>
+                                                </#if>
                                             </a>
                                         </strong>
                                     </h5>
@@ -299,50 +312,11 @@
                     </div>
                 </#list>
             </div>
-            <nav class="d-flex justify-content-center">
-                <ul class="pagination pg-red">
-                    <li class="page-item disabled">
-                        <a href="" class="page-link" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <li class="page-item active">
-                        <a href="" class="page-link" aria-label="Previous">
-                            <span aria-hidden="true">1</span>
-                        </a>
-                    </li>
-                    <li class="page-item ">
-                        <a href="" class="page-link" aria-label="Previous">
-                            <span aria-hidden="true">2</span>
-                        </a>
-                    </li>
-                    <li class="page-item ">
-                        <a href="" class="page-link" aria-label="Previous">
-                            <span aria-hidden="true">3</span>
-                        </a>
-                    </li>
-                    <li class="page-item ">
-                        <a href="" class="page-link" aria-label="Previous">
-                            <span aria-hidden="true">4</span>
-                        </a>
-                    </li>
-                    <li class="page-item ">
-                        <a href="" class="page-link" aria-label="Previous">
-                            <span aria-hidden="true">5</span>
-                        </a>
-                    </li>
-                    <li class="page-item ">
-                        <a href="" class="page-link" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
         </div>
     </main>
 </div>
 <footer class="page-footer text-center font-small mt-4 wow fadeIn red">
-    <div class = "pt-4 pb-4">
+    <div class="pt-4 pb-4">
         <a href="#">
             <i class="fab fa-facebook-square mr-3"></i>
         </a>

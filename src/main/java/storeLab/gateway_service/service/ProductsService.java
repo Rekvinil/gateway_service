@@ -34,15 +34,41 @@ public class ProductsService {
         return Arrays.stream(products).collect(Collectors.toList());
     }
 
+    public List<Product> getProductsWithDiscount(){
+        List<Product> products = new ArrayList<>();
+        for(Product p : getProducts()){
+            if(!p.getDiscount().equals("0")){
+                products.add(p);
+            }
+        }
+        return products;
+    }
+
     public Product getProduct(Integer id){
         return restTemplate.getForObject(URL_PRODUCT+"/productEditing/"+id,Product.class);
     }
 
-    public void changeProduct(Map<String, String> requestParams){
-        float pricef = Float.parseFloat(requestParams.get("price"));
+    public void changeProductCount(Product p){
+        HttpEntity<Product> requestBody = new HttpEntity<>(p);
+        restTemplate.put(URL_PRODUCT+"/productEditing/changeProduct",requestBody,Product.class);
+    }
 
+    public void changeProduct(Map<String, String> requestParams, MultipartFile img) throws Exception{
+        Product product = getProduct(Integer.parseInt(requestParams.get("id")));
+        String image = product.getImg();
+        int i = image.indexOf(".");
+        String s = image.substring(i+1);
+        String result = "";
+        if(img!=null&&!img.getOriginalFilename().equals(s)&&!img.getOriginalFilename().isEmpty()){
+            String uuidFile = UUID.randomUUID().toString();
+            result = uuidFile + "." + img.getOriginalFilename();
+            img.transferTo(new File(uploadPath+"/"+result));
+        }else{
+            result = image;
+        }
+        float pricef = Float.parseFloat(requestParams.get("price"));
         Product newProduct = new Product(Integer.parseInt(requestParams.get("id")),requestParams.get("name"),pricef,requestParams.get("discount"),
-                requestParams.get("img"));
+                result, Integer.parseInt(requestParams.get("count")));
         HttpEntity<Product> requestBody = new HttpEntity<>(newProduct);
         restTemplate.put(URL_PRODUCT+"/productEditing/changeProduct",requestBody,Product.class);
         List<ProductCharacteristic> pcs = getCharacteristicsOfProduct(Integer.parseInt(requestParams.get("id")));
@@ -75,7 +101,7 @@ public class ProductsService {
             img.transferTo(new File(uploadPath+"/"+result));
         }
         float pricef = Float.parseFloat(requestParams.get("price"));
-        Product product = new Product(requestParams.get("name"), pricef, requestParams.get("discount"), result);
+        Product product = new Product(requestParams.get("name"), pricef, requestParams.get("discount"), result, Integer.parseInt(requestParams.get("count")));
         HttpEntity<Product> requestBody = new HttpEntity<>(product);
         restTemplate.postForObject(URL_PRODUCT+"/productEditing/addProduct", requestBody, Product.class);
         List<Product> products = getProducts();
@@ -146,7 +172,7 @@ public class ProductsService {
         if(params.get("Скидка").get(0).equals("да")){
             List<Product> productRes = new ArrayList<>();
             for (Product p : products){
-                if(!p.getDiscount().equals("нет")){
+                if(!p.getDiscount().equals("0")){
                     productRes.add(p);
                 }
             }
@@ -208,5 +234,33 @@ public class ProductsService {
             }
         }
         return s.toString();
+    }
+
+    public void addDiscount(MultiValueMap<String, String> params){
+        String discount = params.get("Скидка").get(0);
+        List<Product> lst = new ArrayList<>();
+        boolean flag = false;
+        for(Product p : getProducts()){
+            for(ProductCharacteristic pr : getCharacteristicsOfProduct(p.getId())){
+                if(params.containsKey(pr.getCharacteristics().getName())){
+                    if(params.get(pr.getCharacteristics().getName()).contains(pr.getValue())){
+                        flag = true;
+                    }
+                }
+            }
+            if(flag){
+                lst.add(p);
+            }
+            flag = false;
+        }
+        changeDiscount(lst, discount);
+    }
+
+    private void changeDiscount(List<Product> lst, String discount){
+        for(Product p : lst){
+            p.setDiscount(discount);
+            HttpEntity<Product> requestBody = new HttpEntity<>(p);
+            restTemplate.put(URL_PRODUCT+"/productEditing/changeProduct",requestBody,Product.class);
+        }
     }
 }

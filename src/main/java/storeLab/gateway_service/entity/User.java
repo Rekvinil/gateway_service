@@ -1,11 +1,15 @@
 package storeLab.gateway_service.entity;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Set;
 
 @Entity
 @Table(name = "user")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -20,7 +24,9 @@ public class User {
     private Integer points;
     private boolean active;
 
-    public User(String username, String password, String firstName, String lastName, String email, String city, String adress, Integer points, boolean active, Set<Role> roles) {
+    private String activationCode;
+
+    public User(String username, String password, String firstName, String lastName, String email, String city, String adress, Integer points, boolean active, Set<Role> roles, String activationCode) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
@@ -31,6 +37,7 @@ public class User {
         this.points = points;
         this.active = active;
         this.roles = roles;
+        this.activationCode = activationCode;
     }
 
     public User() {
@@ -40,6 +47,35 @@ public class User {
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
+
+    public boolean isAdmin(){
+        return roles.contains(Role.ADMIN);
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return getRoles();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isActive();
+    }
 
     public Integer getId() {
         return id;
@@ -127,5 +163,13 @@ public class User {
 
     public void setPoints(Integer points) {
         this.points = points;
+    }
+
+    public String getActivationCode() {
+        return activationCode;
+    }
+
+    public void setActivationCode(String activationCode) {
+        this.activationCode = activationCode;
     }
 }

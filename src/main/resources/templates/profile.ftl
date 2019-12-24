@@ -46,6 +46,7 @@
                             </div>
                         </div>
                     </div>
+                    <a class="btn-sm btn-warning" href="/deleteWishList/${wishlist.id}">Удалить</a>
                 </div>
             </div>
         </#list>

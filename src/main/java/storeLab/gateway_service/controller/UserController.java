@@ -2,6 +2,7 @@ package storeLab.gateway_service.controller;
 
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +37,7 @@ public class UserController {
         this.wishListService = wishListService;
     }
 
+
     @GetMapping("/profile/{username}")
     public String getProfile(@PathVariable String username, Model model){
         model.addAttribute("users", userService.getUserByUsername(username));
@@ -63,5 +65,11 @@ public class UserController {
     public String addToWishList(@RequestParam Integer productId, @RequestParam String username){
         wishListService.addToWishList(userService.getUserByUsername(username),productId);
         return "redirect:/menu";
+    }
+
+    @GetMapping("/deleteWishList/{id}")
+    public String deleteWishList(@PathVariable Integer id, @AuthenticationPrincipal User user){
+        wishListService.deleteFromWishList(id);
+        return "redirect:/profile/"+ user.getUsername();
     }
 }

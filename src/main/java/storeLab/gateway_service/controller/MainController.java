@@ -1,11 +1,19 @@
 package storeLab.gateway_service.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import storeLab.gateway_service.entity.Product;
+import storeLab.gateway_service.entity.User;
+import storeLab.gateway_service.service.OrderService;
 import storeLab.gateway_service.service.ProductsService;
 
 import java.util.Collections;
@@ -14,14 +22,16 @@ import java.util.Collections;
 @Controller
 public class MainController {
     private final ProductsService productsService;
+    private final OrderService orderService;
 
-    public MainController(ProductsService productsService) {
+    public MainController(ProductsService productsService, OrderService orderService) {
         this.productsService = productsService;
+        this.orderService = orderService;
     }
 
     @GetMapping("/")
     public String main(Model model){
-        model.addAttribute("products", productsService.getProducts());
+        model.addAttribute("products", productsService.getProductsWithDiscount());
         return "index";
     }
 
@@ -107,11 +117,6 @@ public class MainController {
         params.put("Издательство", Collections.singletonList("Bubble"));
         model.addAttribute("products", productsService.searchFromList(params,name));
         return "menuBubble";
-    }
-
-    @GetMapping("/adminpage")
-    public String adminPage(){
-        return "adminPage";
     }
 
 }

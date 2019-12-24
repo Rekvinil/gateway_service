@@ -1,10 +1,12 @@
 package storeLab.gateway_service.controller;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import storeLab.gateway_service.entity.ProductCharacteristic;
+import storeLab.gateway_service.entity.User;
 import storeLab.gateway_service.service.ProductsService;
 import storeLab.gateway_service.service.ReviewService;
 
@@ -24,18 +26,17 @@ public class ProductsController {
         this.reviewService = reviewService;
     }
 
-    @GetMapping("/getProducts")
-    public String getProducts(Model model){
-        model.addAttribute("products",productsService.getProducts());
-        return "getProducts";
-    }
-
     @GetMapping("/menu/{product}")
-    public String getProduct(@PathVariable Integer product,Model model){
+    public String getProduct(@AuthenticationPrincipal User user, @PathVariable Integer product, Model model){
         model.addAttribute("product", productsService.getProduct(product));
         model.addAttribute("description", productsService.getDescription(product));
         model.addAttribute("author", productsService.getAuthor(product));
         model.addAttribute("artist", productsService.getArtist(product));
+        if(user!=null){
+            model.addAttribute("coder", user.getActivationCode());
+        }else{
+            model.addAttribute("coder", "");
+        }
         List<ProductCharacteristic> prch = productsService.getCharacteristicsOfProduct(product);
         List<ProductCharacteristic> characteristics = new ArrayList<>();
         for(ProductCharacteristic pr : prch){
@@ -63,39 +64,6 @@ public class ProductsController {
     public String deleteReview(@PathVariable Integer review, @PathVariable Integer product){
         reviewService.deleteReview(review);
         return "redirect:/menu/"+ product;
-    }
-
-    @GetMapping("/changeProduct/{product}")
-    public String changeProduct(@PathVariable Integer product, Model model){
-        model.addAttribute("product", productsService.getProduct(product));
-        List<ProductCharacteristic> productCharacteristics = productsService.getCharacteristicsOfProduct(product);
-        model.addAttribute("productscharacteristics", productCharacteristics);
-        return "changeProduct";
-    }
-
-    @PostMapping("/changeProduct")
-    public String changeProduct(@RequestParam Map<String, String> requestParams){
-        productsService.changeProduct(requestParams);
-        return "redirect:/getProducts";
-    }
-
-    @PostMapping("/addProduct")
-    public String addProduct(@RequestParam Map<String,String> requestParams,
-                             @RequestParam("img")MultipartFile img) throws IOException {
-        productsService.addProduct(requestParams, img);
-        return "redirect:/getProducts";
-    }
-
-    @GetMapping("/addProduct")
-    public String getProductAddPage(Model model){
-        model.addAttribute("characteristics", productsService.getCharacteristics());
-        return "addProduct";
-    }
-
-    @GetMapping("/deleteProduct/{id}")
-    public String deleteProduct(@PathVariable Integer id){
-        productsService.deleteProduct(id);
-        return "redirect:/getProducts";
     }
 
 }

@@ -62,14 +62,15 @@
                 <li class="nav-item ">
                     <a href="/menu" class="nav-link waves-effect" style="color: white">Каталог</a>
                 </li>
-                <li class="nav-item ">
-                    <a href="#" class="nav-link waves-effect" style="color: white">О нас</a>
-                </li>
+                <#if isAdmin>
+                    <li class="nav-item">
+                        <a href="/adminPage" class="nav-link waves-effect" style="color: white">Панель администратора</a>
+                    </li>
+                </#if>
             </ul>
             <ul class="navbar-nav nav-flex-icons">
                 <li class="nav-item d-flex align-items-center">
-                    <a href="#" class="nav-link waves-effect">
-                        <span class="badge yellow z-depth-1 mr-1">2</span>
+                    <a href="/cart/${nameUser}" class="nav-link waves-effect">
                         <i class="fa fa-shopping-cart" style="color: white"></i>
                         <span class="clearfix d-none d-sm-inline-block" style="color: white">Корзина</span>
                     </a>
@@ -288,8 +289,19 @@
                                 <div class="container-fluid" style="position: absolute; bottom: 0; right: 0">
                                     <h5 class="mt-auto pt-auto">
                                         <strong>
-                                            <a href="/menu/${product.id}" class="dark-grey-text" style="font-size: 1.5em">
-                                                ${product.price}₽
+                                            <a href="/menu/${product.id}" class="dark-grey-text" style="font-size: 1.25em">
+                                                <#if product.discount != "0">
+                                                    <span>
+                                                    <del>${product.price}</del>
+                                                </span>
+                                                    <span>
+                                                    ${product.price*(1-product.discount?number/100)}₽
+                                                </span>
+                                                <#else>
+                                                    <span>
+                                                            ${product.price}₽
+                                                        </span>
+                                                </#if>
                                             </a>
                                         </strong>
                                     </h5>
@@ -299,45 +311,6 @@
                     </div>
                 </#list>
             </div>
-            <nav class="d-flex justify-content-center">
-                <ul class="pagination pg-dark">
-                    <li class="page-item disabled">
-                        <a href="" class="page-link" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <li class="page-item active">
-                        <a href="" class="page-link" aria-label="Previous">
-                            <span aria-hidden="true">1</span>
-                        </a>
-                    </li>
-                    <li class="page-item ">
-                        <a href="" class="page-link" aria-label="Previous">
-                            <span aria-hidden="true">2</span>
-                        </a>
-                    </li>
-                    <li class="page-item ">
-                        <a href="" class="page-link" aria-label="Previous">
-                            <span aria-hidden="true">3</span>
-                        </a>
-                    </li>
-                    <li class="page-item ">
-                        <a href="" class="page-link" aria-label="Previous">
-                            <span aria-hidden="true">4</span>
-                        </a>
-                    </li>
-                    <li class="page-item ">
-                        <a href="" class="page-link" aria-label="Previous">
-                            <span aria-hidden="true">5</span>
-                        </a>
-                    </li>
-                    <li class="page-item ">
-                        <a href="" class="page-link" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
         </div>
     </main>
 </div>

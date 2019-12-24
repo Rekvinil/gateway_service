@@ -29,17 +29,15 @@
                 <li class="nav-item ">
                     <a href="/menu" class="nav-link waves-effect">Каталог</a>
                 </li>
-                <li class="nav-item ">
-                    <a href="#" class="nav-link waves-effect">О нас</a>
-                </li>
-                <li class="nav-item">
-                    <a href="/user" class="nav-link waves-effect">Панель администратора</a>
-                </li>
+                <#if isAdmin>
+                    <li class="nav-item">
+                        <a href="/adminPage" class="nav-link waves-effect">Панель администратора</a>
+                    </li>
+                </#if>
             </ul>
             <ul class="navbar-nav nav-flex-icons">
                 <li class="nav-item d-flex align-items-center">
-                    <a href="#" class="nav-link waves-effect">
-                        <span class="badge yellow z-depth-1 mr-1">2</span>
+                    <a href="/cart/${nameUser}" class="nav-link waves-effect">
                         <i class="fa fa-shopping-cart"></i>
                         <span class="clearfix d-none d-sm-inline-block">Корзина</span>
                     </a>

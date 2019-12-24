@@ -6,6 +6,9 @@
         <h1 class="text-center">
             <strong>Вход</strong>
         </h1>
+        <div class="text-center">
+            ${message?ifExists}
+        </div>
         <div class="container col-4 border border-black">
             <form method="post" action="/login">
                 <div class="form-group">
